@@ -43,15 +43,11 @@ pub struct NewUser {
 
 pub struct QueryRoot;
 
-#[juniper::object(
-    Context = Sqlite,
-)]
+#[juniper::object(Context = Sqlite)]
 impl QueryRoot {
     async fn user(id: i32, context: &Sqlite) -> FieldResult<User> {
-        info!("user: {}", id);
-
         match context.get_user(id) {
-            Ok(user) => Ok(user.clone()),
+            Ok(user) => Ok(user),
             Err(e) => {
                 error!("{:?}", e);
                 Err(e)?

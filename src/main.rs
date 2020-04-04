@@ -3,7 +3,7 @@ use std::sync::Arc;
 
 use actix_web::{middleware, web, App, Error, HttpResponse, HttpServer};
 
-use juniper::http::graphiql::graphiql_source;
+use juniper::http::playground::playground_source;
 use juniper::http::GraphQLRequest;
 
 #[macro_use] extern crate log;
@@ -14,8 +14,8 @@ mod sqlite;
 use crate::schema::{create_schema, Schema};
 use crate::sqlite::Sqlite;
 
-async fn graphiql() -> HttpResponse {
-    let html = graphiql_source("http://127.0.0.1:8080/graphql");
+async fn playground() -> HttpResponse {
+    let html = playground_source("http://127.0.0.1:8080/graphql");
 
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
@@ -49,7 +49,7 @@ async fn main() -> io::Result<()> {
             .data(schema.clone())
             .wrap(middleware::Logger::default())
             .service(web::resource("/graphql").route(web::post().to(graphql)))
-            .service(web::resource("/graphiql").route(web::get().to(graphiql)))
+            .service(web::resource("/playground").route(web::get().to(playground)))
     })
     .bind("127.0.0.1:8080")?
     .run()

@@ -2,28 +2,24 @@ use rusqlite::{Connection, Result, NO_PARAMS};
 
 use crate::schema::{User, NewUser};
 
-const DB_PATH: &str = "./sqlite.db";
-
 #[derive(Copy, Clone)]
-pub struct Sqlite;
+pub struct Sqlite {
+    pub db_path: &'static str
+}
 
 impl juniper::Context for Sqlite {}
 
 impl Sqlite {
-    fn get_connection() -> Result<Connection> {
-        Connection::open(DB_PATH)
-    }
-
-    pub fn get_user(self, id: i32) -> Result<User> {
-        let conn = Sqlite::get_connection()?;
+    pub fn get_user(&self, id: i32) -> Result<User> {
+        let conn = Connection::open(self.db_path)?;
 
         let user = select_user(&conn, id)?;
 
         Ok(user)
     }
 
-    pub fn add_user(self, user: NewUser) -> Result<User> {
-        let conn = Sqlite::get_connection()?;
+    pub fn add_user(&self, user: NewUser) -> Result<User> {
+        let conn = Connection::open(self.db_path)?;
 
         let user_id = insert_user(&conn, user)?;
 

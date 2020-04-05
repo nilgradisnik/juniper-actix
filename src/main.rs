@@ -14,8 +14,12 @@ mod sqlite;
 use crate::schema::{create_schema, Schema};
 use crate::sqlite::Sqlite;
 
+const SQLITE_DB: &'static str = "./sqlite.db";
+const SERVER: &'static str = "127.0.0.1:8080";
+
 async fn playground() -> HttpResponse {
-    let html = playground_source("http://127.0.0.1:8080/graphql");
+    let endpoint = format!("http://{server}/graphql", server = SERVER);
+    let html = playground_source(&endpoint);
 
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
@@ -27,7 +31,9 @@ async fn graphql(
     data: web::Json<GraphQLRequest>,
 ) -> Result<HttpResponse, Error> {
     let user = web::block(move || {
-        let res = data.execute(&st, &Sqlite{ });
+        let context = Sqlite{ db_path: SQLITE_DB };
+        let res = data.execute(&st, &context);
+
         Ok::<_, serde_json::error::Error>(serde_json::to_string(&res)?)
     })
     .await?;
@@ -51,7 +57,7 @@ async fn main() -> io::Result<()> {
             .service(web::resource("/graphql").route(web::post().to(graphql)))
             .service(web::resource("/playground").route(web::get().to(playground)))
     })
-    .bind("127.0.0.1:8080")?
+    .bind(SERVER)?
     .run()
     .await
 }

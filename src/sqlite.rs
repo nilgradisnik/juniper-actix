@@ -1,6 +1,6 @@
 use rusqlite::{Connection, Result, NO_PARAMS};
 
-use crate::schema::{User, NewUser};
+use crate::schema::user::{User, NewUser};
 
 #[derive(Copy, Clone)]
 pub struct Sqlite {

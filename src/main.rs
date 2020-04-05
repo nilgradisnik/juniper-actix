@@ -1,3 +1,5 @@
+#[macro_use] extern crate log;
+
 use std::io;
 use std::sync::Arc;
 
@@ -5,8 +7,6 @@ use actix_web::{middleware, web, App, Error, HttpResponse, HttpServer};
 
 use juniper::http::playground::playground_source;
 use juniper::http::GraphQLRequest;
-
-#[macro_use] extern crate log;
 
 mod schema;
 mod sqlite;

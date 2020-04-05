@@ -1,6 +1,6 @@
 use rusqlite::{Connection, Result, NO_PARAMS};
 
-use crate::schema::user::{User, NewUser};
+use crate::schema::user::{NewUser, User};
 
 const SQLITE_DB: &'static str = "./sqlite.db";
 
@@ -32,15 +32,15 @@ impl Sqlite {
 fn select_user(conn: &Connection, user_id: i32) -> Result<User> {
     conn.query_row_named(
         "SELECT id, first_name, last_name, email FROM users WHERE id = :id",
-        &[
-            (":id", &user_id)
-        ],
-        |row| Ok(User {
-            id: row.get(0)?,
-            first_name: row.get(1)?,
-            last_name: row.get(2)?,
-            email: row.get(3)?,
-        })
+        &[(":id", &user_id)],
+        |row| {
+            Ok(User {
+                id: row.get(0)?,
+                first_name: row.get(1)?,
+                last_name: row.get(2)?,
+                email: row.get(3)?,
+            })
+        },
     )
 }
 
@@ -50,7 +50,7 @@ fn insert_user(conn: &Connection, user: NewUser) -> Result<i32> {
         &[
             (":first_name", &user.first_name),
             (":last_name", &user.last_name),
-            (":email", &user.email)
+            (":email", &user.email),
         ],
     )?;
 

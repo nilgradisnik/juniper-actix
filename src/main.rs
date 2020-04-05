@@ -1,4 +1,5 @@
-#[macro_use] extern crate log;
+#[macro_use]
+extern crate log;
 
 use std::io;
 
@@ -8,8 +9,8 @@ mod graphql;
 mod schema;
 mod sqlite;
 
-use crate::schema::create_schema;
 use crate::graphql::{graphql, playground};
+use crate::schema::create_schema;
 
 const SERVER: &'static str = "127.0.0.1:8080";
 

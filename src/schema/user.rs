@@ -30,8 +30,7 @@ impl User {
     }
 }
 
-#[derive(Debug, Clone)]
-#[derive(GraphQLInputObject)]
+#[derive(Debug, Clone, GraphQLInputObject)]
 #[graphql(description = "New user model")]
 pub struct NewUser {
     pub first_name: String,

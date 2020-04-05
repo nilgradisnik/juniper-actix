@@ -5,7 +5,7 @@ use crate::sqlite::Sqlite;
 
 pub mod user;
 
-use user::{User, NewUser};
+use user::{NewUser, User};
 
 pub struct Query;
 

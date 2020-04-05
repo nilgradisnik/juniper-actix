@@ -41,10 +41,10 @@ pub struct NewUser {
     pub email: String,
 }
 
-pub struct QueryRoot;
+struct Query;
 
 #[juniper::object(Context = Sqlite)]
-impl QueryRoot {
+impl Query {
     async fn user(id: i32, context: &Sqlite) -> FieldResult<User> {
         match context.get_user(id) {
             Ok(user) => Ok(user),
@@ -56,10 +56,10 @@ impl QueryRoot {
     }
 }
 
-pub struct MutationRoot;
+struct Mutation;
 
 #[juniper::object(Context = Sqlite)]
-impl MutationRoot {
+impl Mutation {
     fn createUser(new_user: NewUser, context: &Sqlite) -> FieldResult<User> {
         match context.add_user(new_user.clone()) {
             Ok(user) => Ok(user),
@@ -71,8 +71,8 @@ impl MutationRoot {
     }
 }
 
-pub type Schema = RootNode<'static, QueryRoot, MutationRoot>;
+pub type Schema = RootNode<'static, Query, Mutation>;
 
 pub fn create_schema() -> Schema {
-    Schema::new(QueryRoot {}, MutationRoot {})
+    Schema::new(Query, Mutation)
 }

@@ -3,6 +3,7 @@ extern crate log;
 
 use std::io;
 
+use actix_cors::Cors;
 use actix_web::{middleware, web, App, HttpServer};
 
 mod graphql;
@@ -24,6 +25,7 @@ async fn main() -> io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .data(schema.clone())
+            .wrap(Cors::default())
             .wrap(middleware::Logger::default())
             .service(web::resource("/").route(web::post().to(graphql)))
             .service(web::resource("/playground").route(web::get().to(playground)))
